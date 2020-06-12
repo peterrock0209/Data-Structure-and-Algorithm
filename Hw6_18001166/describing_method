@@ -1,0 +1,148 @@
+**Mô tả bài tập homework 6
+
+1. UnsortedArrayPriorityQueue
+
+- tạo thêm 1 method toString để in các phần tử mảng;
+- tạo constructor UnsortedArrayPriorityQueue với defaultsize;
+
+- method insert(Entry entry) 
+	+ nếu n = defaultsize thì return và sang bước tiếp theo;
+	+ gán array[n] = entry với kiểu dữ liệu ArrEntry;
+	+ tăng chỉ số mảng lên 1;
+	
+- method insert(Object k, Object e)
+	+ tương tự insert(Entry entry) ;
+	
+- method Entry removeMin()
+	+ kiểm tra queue có trống hay không, nếu không chuyển sang bước tiếp theo;
+	+ tạo một biến mới min có kiểu dữ liệu ArrEntry và gán bằng phần tử đầu tiên của mảng;
+	+ tạo một biến point để lưu vị trí của phần tử min;
+	+ duyệt các phần tử 
+		*TH1: so sánh Key của các phần tử với Key của min, 
+		 nếu nhỏ hơn thì gán min = phần tử đó và lưu lại index mới cho point;
+		*TH2: 2 Key = nhau, ta so sánh Value của các phần tử với Value của min, 
+		 nếu nhỏ hơn thì gán min = phần tử đó và lưu lại index mới cho point;
+	+ duyệt các phần tử từ vị trí phần tử min (point) đẩy các phần tử lên 1 index
+	  và giảm n đi 1 vì lúc này phần tử min đã đã được remove
+	+ return min;
+
+- method Entry min()
+	+ kiểm tra queue có trống hay không, nếu không chuyển sang bước tiếp theo;
+	+ tạo một biến mới min có kiểu dữ liệu ArrEntry và gán bằng phần tử đầu tiên của mảng;
+	+ duyệt các phần tử 
+		*TH1: so sánh Key của các phần tử với Key của min, 
+		 nếu nhỏ hơn thì gán min = phần tử đó;
+		*TH2: 2 Key = nhau, ta so sánh Value của các phần tử với Value của min, 
+		 nếu nhỏ hơn thì gán min = phần tử đó;
+	+ return min; 
+	
+==============================================================================================
+	
+2. SortedArrayPriorityQueue
+- tương tự kiểu dữ liệu UnsortedArrayPriorityQueue và ta chỉ cần 
+  thêm hàm sort để sắp xếp các phần tử theo thứ tự tăng giảm
+
+==============================================================================================
+
+3. UnsortedLinkedPriorityQueue
+
+- method insert(Entry entry)
+	+ nếu queue rỗng thì head = tail = entry;
+	+ tăng số phần tử lên 1 và trả về head & tail;
+	+ ngược lại, ta gán root = head, head = entry, head.next = root và tăng n lên;
+
+- method insert(Object k, Object e) (tương tự trên)
+
+- method Entry removeMin()
+	+ nếu queue rỗng -> return;
+	+ tạo biến mới K minkey = null để lưu vị trí của phần tử min;
+	+ root = head để linh động sử dụng head;
+	+ tạo biến preMin = null để lưu lại phần tử đứng trước min;
+	+ đầu tiên ta gán minKey = root.key;
+	+ cho chạy vòng while(root.next!=null) để tìm min
+		* tạo biến keyNext để lưu khóa của phần tử tiếp theo;
+		* nếu keyNext < minKey thì gán min = root.next, lưu lại root = preMin và minKey = keyNext;
+	+ để removeMin ta kiểm tra các trường hợp
+		* nếu preMin = null, tức không có phần tư trước min, ta kiểm tra xem có phần tử sau min không, 
+		  nếu có gán head = min.next, nếu không thì head = tail = null;
+		* ngược lại, kiểm ta nếu có phần tử sau min(min.next) thì ta gán phần tử sau preMin với phần 
+		  tử sau min(preMin.next = min.next) để đẩy lên và remove min, còn nếu không có min.next thì 
+		  preMin.next = null và tail = preMin;
+	+ giảm số phần tử đi 1 và trả về min
+	
+- method Entry min()
+	+ nếu queue rỗng -> return;
+	+ tạo biến mới K minkey = null để lưu vị trí của phần tử min;
+	+ root = head để linh động sử dụng head;
+	+ đầu tiên ta gán minKey = root.key;
+	+ cho chạy vòng while(root.next!=null) để tìm min
+	* tạo biến keyNext để lưu khóa của phần tử tiếp theo
+	* nếu keyNext < minKey thì gán min = root.next và minKey = keyNext cho vòng while tiếp theo
+      sau đó trả về min
+      
+==============================================================================================
+
+4. SortedLinkedPriorityQueue
+**nguồn tham khảo: https://www.sanfoundry.com/java-program-implement-sorted-singly-linked-list/ 
+- method insert(Entry entry)
+	+ nếu queue rỗng thì head = tail = entry;
+	+ tăng số phần tử lên 1 và trả về head & tail;
+	+ ngược lại, ta gán root = head, head = entry, head.next = root và tăng n lên; 
+	+ ngược lại, gán root = head để linh động sử dụng head
+		* gán temp = (new) entry, keyN =  head.getKey(), nếu keyN > keyTemp thì temp.next = head; head = temp;
+		* ngược lại, nếu keyN < keyTemp, tạo các biến key = root.getKey(); element = root.getValue() và preRoot để lưu lại phần tử trước head
+		* duyệt vòng while để so sánh key, nếu = nhau ta so sánh value, gán preRoot = root; 
+		root = root.next; -> head mới
+		key = (K) root.getKey(); -> khóa mới
+		element = (E) root.getValue(); -> giá trị mới
+		* gán lại key = (K) root.getKey(); tiếp tục so sánh trường hợp key <= keyTeam
+		* nếu key(head) < keyTemp, tạo biến mới preNext gán = root.next; nếu preNext = null thì chỉ còn tail = temp, root.next = tail và tail.next = null;
+		ngược lại: root.next = temp; temp.next = preNext;
+		* ngược lại nếu key = nhau ta lại đi so sánh giá trị(tương tự)
+		* lúc này ta đã sắp xếp được các phần tử theo key và value theo các trường hợp đã chia, tăng số phần tử lên 1(n++)
+=> tóm lại, cứ thêm 1 phần tử thì sẽ so sánh với các phần tử đã có và sắp xếp tăng dần
+
+- method insert(Object k, Object e) tương tự method insert(Entry entry)
+
+- method removeMin()
+	+ gán root = head để giữ lại min vì min là phần tử head
+	+ chuyển tiếp các phần tử head=head.next 
+	+ và head = tail = null nếu head.next = null;
+	+ giảm số phần tử đi 1
+	
+- method min() : trả về head vì sau khi insert thì head là phần tử nhỏ nhất
+
+==============================================================================================
+
+5. MinHeapPriorityQueue
+**nguồn tham khảo: 
+- https://www.sanfoundry.com/java-program-implement-min-heap/
+- https:https://basicalgorithm.wordpress.com/category/c%E1%BA%A5u-truc-d%E1%BB%AF-li%E1%BB%87u-data-structures/
+- method upHeap()
+	+ là việc chúng ta vun đống lên khi insert thêm một phần tử mới vào đảm bảo tính đúng của heap
+	  là phần tử cha phải nhỏ hơn các phần tử con của nó
+	+ gán index = n, parent = index/2 để lấy vị trí của phần tử cha
+	+ sau đó so sánh key của phần tử mới với key của phần tử cha của nó
+	+ nếu nhỏ hơn thì swap cho đến khi key = nhau thì ta so sánh value
+	
+- method downHeap() 
+	+ là việc vun xuống khi xóa đi một phần tử min ở đầu heap để đảm bảo tính chất đúng của 1 heap
+	+ sau khi removeMin() thì gán root = phần tử lá cuối cùng.
+	+ tạo các biến con trái và con phải để so sánh với cha
+	+ nếu cha lớn hơn con trái thì lưu lại key mới = key con trái, sau đó so sánh với key con phải, 
+		*nếu nhỏ hơn thì swap(cha, con phải)
+		*ngược lại, swap(cha, con trái)
+	+ và cứ làm thế cho đến khi đảm bảo tính đúng của heap
+	+ trong code có phần chia các trường hợp cụ thể và đầy đủ mà chúng ta sẽ gặp phải khi code
+	
+- method insert : khi insert 1 phần tử mới, có thể sẽ vi phạm tính chất 1 heap, ta gọi upHeap() để vun đống lên
+- method removeMin():  khi remove 1 phần tử mới, có thể sẽ vi phạm tính chất 1 heap, ta gọi upHeap() để vun đống xuống
+- method print(): tương tự print() trong BinaryTree ở homework5
+
+==============================================================================================
+
+6. HeapPriorityQueue(HeapSort)
+- về heapSort: đơn giản ta là ta in ra các phần tử removeMin() là ta được một heap đã sắp xếp hoàn chỉnh
+	     while(!pq.isEmpty()) {
+		     System.out.print(pq.removeMin().getKey() + " ");
+	     }
